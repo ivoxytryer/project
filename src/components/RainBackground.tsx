@@ -24,7 +24,12 @@ function makeDrops(count: number): Drop[] {
 }
 
 export function RainBackground() {
-  const drops = useMemo(() => makeDrops(46), []);
+  const drops = useMemo(() => {
+    const mobile =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches;
+    return makeDrops(mobile ? 18 : 46);
+  }, []);
 
   return (
     <div className="rain-layer" aria-hidden>

@@ -36,7 +36,12 @@ export function TasksView() {
       startViewTransition?: (callback: () => void) => void;
     };
 
-    if (typeof doc.startViewTransition === "function") {
+    const canAnimate =
+      typeof doc.startViewTransition === "function" &&
+      window.matchMedia("(min-width: 768px)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (canAnimate) {
       doc.startViewTransition(() => flushSync(update));
     } else {
       update();

@@ -127,6 +127,18 @@ textarea {
   }
 }
 
+/* На телефоне дождь легче: меньше слоёв, без will-change */
+@media (max-width: 767px) {
+  .rain-layer {
+    contain: strict;
+  }
+
+  .rain-drop {
+    filter: blur(1px);
+    will-change: auto;
+  }
+}
+
 /* ---- Появление содержимого ---- */
 @keyframes rise {
   from {
