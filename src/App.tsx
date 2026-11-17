@@ -5,6 +5,7 @@ import { TasksView } from "./components/TasksView";
 import { DashboardView } from "./components/DashboardView";
 import { MobileNav } from "./components/MobileNav";
 import { Logo } from "./components/Logo";
+import { RainBackground } from "./components/RainBackground";
 import { useStore } from "./store";
 
 export default function App() {
@@ -13,9 +14,10 @@ export default function App() {
 
   return (
     <div className="relative flex h-full flex-col bg-ink text-bone md:flex-row">
+      <RainBackground />
       <Sidebar view={view} onNavigate={setView} />
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+      <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-line px-4 py-3 md:hidden">
           <div className="flex items-center gap-2.5">
             <Logo className="h-5 w-5 text-bone" />

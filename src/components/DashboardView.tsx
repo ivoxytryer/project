@@ -85,7 +85,7 @@ export function DashboardView() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
-      <header className="border-b border-line pb-4">
+      <header className="animate-rise border-b border-line pb-4">
         <h1 className="text-3xl font-semibold tracking-tight text-bone sm:text-4xl">
           Дашборд
         </h1>
@@ -102,7 +102,7 @@ export function DashboardView() {
       </header>
 
       {stats.total === 0 ? (
-        <div className="mt-10 border-y border-line py-16 text-center">
+        <div className="animate-rise mt-10 border-y border-line py-16 text-center" style={{ animationDelay: "60ms" }}>
           <div className="mx-auto flex h-10 w-10 items-center justify-center border border-line text-faint">
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M4 20V10M10 20V4M16 20v-8M22 20H2" strokeLinecap="square" />
@@ -117,7 +117,7 @@ export function DashboardView() {
         </div>
       ) : (
         <>
-          <section className="mt-8">
+          <section className="animate-rise mt-8" style={{ animationDelay: "60ms" }}>
             <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
               Сводка
             </h2>
@@ -152,7 +152,7 @@ export function DashboardView() {
             </div>
           </section>
 
-          <section className="mt-10">
+          <section className="animate-rise mt-10" style={{ animationDelay: "120ms" }}>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
                 Активность

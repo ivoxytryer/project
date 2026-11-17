@@ -145,9 +145,10 @@ export function TasksView() {
             {tasks.map((task, index) => (
               <li
                 key={task.id}
-                className="group relative flex items-center gap-3 border-b border-line py-3 transition-colors hover:bg-panel sm:gap-4"
+                className="animate-rise group relative flex items-center gap-3 border-b border-line py-3 transition-colors hover:bg-panel sm:gap-4"
+                style={{ animationDelay: `${Math.min(index, 12) * 24}ms` }}
               >
-                <span className="w-5 shrink-0 font-mono text-[10px] tabular-nums text-faint">
+                <span className="flex h-11 w-6 shrink-0 items-center justify-center font-mono text-xs tabular-nums text-faint md:h-9">
                   {String(index + 1).padStart(2, "0")}
                 </span>
 
@@ -163,7 +164,15 @@ export function TasksView() {
                         : "border-line-strong text-transparent hover:border-bone"
                     }`}
                   >
-                    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className={`h-3 w-3 transition-transform duration-150 ${
+                        task.completed ? "scale-100" : "scale-50"
+                      }`}
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M3 8.5l3.2 3.2L13 4.5" strokeLinecap="square" />
                     </svg>
                   </span>
@@ -253,7 +262,7 @@ export function TasksView() {
                 </button>
 
                 {menuId === task.id && (
-                  <div className="absolute right-2 top-full z-20 w-52 border border-line bg-panel">
+                  <div className="animate-pop absolute right-2 top-full z-20 w-52 border border-line bg-panel">
                     <button
                       onClick={() => {
                         moveTask(task, -1);
@@ -320,7 +329,7 @@ export function TasksView() {
               Активность
             </h2>
             <div className="mt-4">
-              <Heatmap compact weeks={10} />
+              <Heatmap compact weeks={12} />
             </div>
           </div>
         </aside>

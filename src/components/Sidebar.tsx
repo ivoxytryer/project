@@ -27,7 +27,7 @@ export function Sidebar({ view, onNavigate }: SidebarProps) {
   );
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-ink md:flex">
+    <aside className="relative z-10 hidden w-60 shrink-0 flex-col border-r border-line bg-ink md:flex">
       <div className="flex items-center gap-3 border-b border-line px-5 py-5">
         <Logo className="h-6 w-6 text-bone" />
         <div>

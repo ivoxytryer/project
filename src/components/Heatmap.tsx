@@ -64,22 +64,24 @@ export function Heatmap({ weeks = 17, compact = false, className = "" }: Heatmap
 
   return (
     <div className={className}>
-      {!compact && (
-        <div className="flex gap-[3px]">
-          <div className="w-8 shrink-0" />
-          <div className="grid flex-1" style={columns}>
-            {monthLabels.map((m) => (
-              <span
-                key={`${m.index}-${m.text}`}
-                style={{ gridColumnStart: m.index + 1 }}
-                className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.12em] text-faint"
-              >
-                {m.text}
-              </span>
-            ))}
-          </div>
+      <div className={`flex gap-[3px] ${compact ? "mb-1 min-h-[12px]" : ""}`}>
+        {!compact && <div className="w-8 shrink-0" />}
+        <div className="grid flex-1" style={columns}>
+          {monthLabels.map((m) => (
+            <span
+              key={`${m.index}-${m.text}`}
+              style={{ gridColumnStart: m.index + 1 }}
+              className={
+                compact
+                  ? "whitespace-nowrap font-mono text-[8px] uppercase tracking-[0.08em] text-faint"
+                  : "whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.12em] text-faint"
+              }
+            >
+              {m.text}
+            </span>
+          ))}
         </div>
-      )}
+      </div>
 
       <div className={`flex gap-[3px] ${compact ? "" : "mt-1.5"}`}>
         {!compact && (
