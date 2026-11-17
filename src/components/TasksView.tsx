@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { Task } from "../types";
 import { useStore } from "../store";
 import { Heatmap } from "./Heatmap";
@@ -22,11 +23,23 @@ export function TasksView() {
   useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
   const toggleTask = (task: Task) => {
-    dispatch({ type: "TOGGLE_TASK", id: task.id });
-    if (!task.completed) {
-      setFlashId(task.id);
-      window.clearTimeout(flashTimer.current);
-      flashTimer.current = window.setTimeout(() => setFlashId(null), 900);
+    const update = () => {
+      dispatch({ type: "TOGGLE_TASK", id: task.id });
+      if (!task.completed) {
+        setFlashId(task.id);
+        window.clearTimeout(flashTimer.current);
+        flashTimer.current = window.setTimeout(() => setFlashId(null), 1200);
+      }
+    };
+
+    const doc = document as Document & {
+      startViewTransition?: (callback: () => void) => void;
+    };
+
+    if (typeof doc.startViewTransition === "function") {
+      doc.startViewTransition(() => flushSync(update));
+    } else {
+      update();
     }
   };
 
@@ -161,7 +174,12 @@ export function TasksView() {
                 className={`animate-rise group relative flex items-center gap-3 border-b border-line py-3 transition-colors hover:bg-panel sm:gap-4 ${
                   flashId === task.id ? "task-flash" : ""
                 }`}
-                style={{ animationDelay: `${Math.min(index, 12) * 24}ms` }}
+                style={
+                  {
+                    animationDelay: `${Math.min(index, 12) * 24}ms`,
+                    viewTransitionName: `task-${task.id}`,
+                  } as CSSProperties
+                }
               >
                 <span className="flex h-11 w-6 shrink-0 items-center justify-center font-mono text-xs tabular-nums text-faint md:h-9">
                   {String(index + 1).padStart(2, "0")}
@@ -209,7 +227,7 @@ export function TasksView() {
                   <span
                     className={`min-w-0 flex-1 truncate text-[15px] leading-snug ${
                       task.completed
-                        ? "text-faint line-through decoration-line-strong"
+                        ? "text-faint line-through"
                         : "text-bone"
                     }`}
                   >
