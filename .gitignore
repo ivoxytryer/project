@@ -1,0 +1,22 @@
+# зависимости
+node_modules
+
+# сборка
+dist
+dist-ssr
+
+# локальные переменные окружения
+.env.local
+.env.*.local
+
+# логи и кэш
+*.log
+*.tsbuildinfo
+.vite
+
+# ОС / редакторы
+.DS_Store
+Thumbs.db
+.idea
+.vscode/*
+!.vscode/extensions.json
