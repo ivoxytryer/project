@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useStore } from "../store";
 import { Heatmap } from "./Heatmap";
-import { toDateKey, todayKey, addDays, shiftDateKey } from "../utils/dates";
+import { toDateKey, todayKey, addDays, shiftDateKey, formatShortDate } from "../utils/dates";
 import { plural } from "../utils/helpers";
 
 interface Streak {
@@ -41,7 +41,6 @@ export function DashboardView() {
   const stats = useMemo(() => {
     const total = state.tasks.length;
     const completed = state.tasks.filter((t) => t.completed).length;
-    const open = total - completed;
     const rate = total ? Math.round((completed / total) * 100) : 0;
 
     const completedDates = new Set(
@@ -53,42 +52,123 @@ export function DashboardView() {
     const todayDone = state.tasks.filter((t) => t.date === today && t.completed).length;
     const todayTotal = state.tasks.filter((t) => t.date === today).length;
 
-    return { total, completed, open, rate, streak, todayDone, todayTotal };
+    const journalDates = [...new Set(state.tasks.map((t) => t.date))].sort();
+
+    return {
+      total,
+      completed,
+      rate,
+      streak,
+      todayDone,
+      todayTotal,
+      journalDays: journalDates.length,
+      firstDate: journalDates[0] ?? null,
+    };
   }, [state]);
 
-  const card = (label: string, value: string, sub?: string) => (
-    <div className="rounded-2xl border border-white/5 bg-white/5 p-4 backdrop-blur sm:p-5">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500 sm:text-xs">{label}</div>
-      <div className="mt-2 text-2xl font-bold text-white sm:text-3xl">{value}</div>
-      {sub && <div className="mt-1 text-[11px] text-slate-500 sm:text-xs">{sub}</div>}
+  /** Строка реестра: название слева, измерение справа. */
+  const row = (label: string, value: string, detail?: string) => (
+    <div className="flex items-baseline justify-between gap-4 border-b border-line py-3.5">
+      <dt className="shrink-0 text-[13px] text-muted">{label}</dt>
+      <dd className="flex min-w-0 items-baseline justify-end gap-2.5">
+        <span className="shrink-0 font-mono text-[19px] leading-none tabular-nums text-bone">
+          {value}
+        </span>
+        {detail && (
+          <span className="truncate font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+            {detail}
+          </span>
+        )}
+      </dd>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
-      <header>
-        <h1 className="text-xl font-bold text-white sm:text-2xl">Дашборд</h1>
-        <p className="mt-1 text-sm text-slate-400">Твоя активность и прогресс</p>
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
+      <header className="border-b border-line pb-4">
+        <h1 className="text-3xl font-semibold tracking-tight text-bone sm:text-4xl">
+          Дашборд
+        </h1>
+        <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          {stats.firstDate
+            ? `журнал с ${formatShortDate(stats.firstDate)} · ${stats.journalDays} ${plural(
+                stats.journalDays,
+                "день",
+                "дня",
+                "дней",
+              )}`
+            : "журнал пуст"}
+        </p>
       </header>
 
-      {/* Карточки статистики */}
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-4">
-        {card("Выполнено", String(stats.completed), `из ${stats.total} ${plural(stats.total, "задачи", "задач", "задач")}`)}
-        {card("Процент выполнения", `${stats.rate}%`, `${stats.open} ${plural(stats.open, "открыта", "открыто", "открыто")}`)}
-        {card("Текущая серия", `${stats.streak.current}`, plural(stats.streak.current, "день", "дня", "дней") + " подряд")}
-        {card("Лучшая серия", `${stats.streak.best}`, plural(stats.streak.best, "день", "дня", "дней") + " подряд")}
-      </div>
-
-      {/* Heatmap */}
-      <section className="mt-5 rounded-2xl border border-white/5 bg-white/5 p-4 backdrop-blur sm:mt-6 sm:p-5">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-white">Активность</h2>
-          <span className="text-xs text-slate-500">
-            Сегодня: {stats.todayDone} из {stats.todayTotal} выполнено
-          </span>
+      {stats.total === 0 ? (
+        <div className="mt-10 border-y border-line py-16 text-center">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center border border-line text-faint">
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M4 20V10M10 20V4M16 20v-8M22 20H2" strokeLinecap="square" />
+            </svg>
+          </div>
+          <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+            Записей пока нет
+          </p>
+          <p className="mt-1.5 text-sm text-faint">
+            Добавьте первую задачу — здесь появятся серия и активность.
+          </p>
         </div>
-        <Heatmap weeks={17} />
-      </section>
+      ) : (
+        <>
+          <section className="mt-8">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              Сводка
+            </h2>
+
+            <dl className="mt-3 border-t border-line">
+              {row("Сегодня", `${stats.todayDone} / ${stats.todayTotal}`)}
+              {row(
+                "Текущая серия",
+                String(stats.streak.current),
+                `${plural(stats.streak.current, "день", "дня", "дней")} подряд`,
+              )}
+              {row(
+                "Лучшая серия",
+                String(stats.streak.best),
+                `${plural(stats.streak.best, "день", "дня", "дней")} подряд`,
+              )}
+            </dl>
+
+            <div className="mt-6">
+              <div className="flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                <span>
+                  выполнено {stats.completed} из {stats.total} за всё время
+                </span>
+                <span className="tabular-nums text-bone">{stats.rate}%</span>
+              </div>
+              <div className="mt-2 h-0.5 w-full bg-line">
+                <div
+                  className="progress-fill h-0.5 bg-bone"
+                  style={{ width: `${stats.rate}%` }}
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-10">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                Активность
+              </h2>
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+                <span className="lg:hidden">17 недель</span>
+                <span className="hidden lg:inline">год</span>
+              </span>
+            </div>
+            <div className="mt-4">
+              <Heatmap weeks={17} className="lg:hidden" />
+              <Heatmap weeks={52} className="hidden lg:block" />
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }

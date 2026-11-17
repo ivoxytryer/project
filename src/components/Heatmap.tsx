@@ -1,14 +1,10 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { useStore } from "../store";
 import { toDateKey, addDays, startOfWeek } from "../utils/dates";
+import { plural } from "../utils/helpers";
 
-const LEVELS = [
-  "bg-white/[0.04]",
-  "bg-sky-900/70",
-  "bg-sky-700/75",
-  "bg-sky-500/85",
-  "bg-sky-300",
-] as const;
+/** Плотность записей: от пустой клетки к бумаге. Без цвета — только свет. */
+const LEVELS = ["#1c1d22", "#3a3c42", "#61636b", "#94959c", "#e9e7e1"] as const;
 
 const DAY_LABELS = ["Пн", "", "Ср", "", "Пт", "", "Вс"];
 
@@ -23,120 +19,118 @@ function levelFor(count: number): number {
 interface HeatmapProps {
   weeks?: number;
   compact?: boolean;
+  className?: string;
 }
 
-export function Heatmap({ weeks = 17, compact = false }: HeatmapProps) {
+export function Heatmap({ weeks = 17, compact = false, className = "" }: HeatmapProps) {
   const { state } = useStore();
 
-  const cell = compact ? 9 : 11;
-  const gap = compact ? 2 : 3;
-  const gutter = compact ? 0 : 36;
-
-  const completedCounts = useMemo(() => {
-    const map = new Map<string, number>();
+  const { cells, monthLabels, totalDone } = useMemo(() => {
+    const counts = new Map<string, number>();
     for (const t of state.tasks) {
       if (!t.completed) continue;
-      map.set(t.date, (map.get(t.date) ?? 0) + 1);
+      counts.set(t.date, (counts.get(t.date) ?? 0) + 1);
     }
-    return map;
-  }, [state.tasks]);
 
-  const grid = useMemo(() => {
-    const today = new Date();
-    const first = addDays(startOfWeek(today), -7 * (weeks - 1));
-    const cols: { key: string; cells: { date: Date; key: string; count: number }[] }[] = [];
+    const first = addDays(startOfWeek(new Date()), -7 * (weeks - 1));
+    const now = Date.now();
+    const cells: { key: string; count: number; future: boolean }[] = [];
+    const monthLabels: { index: number; text: string }[] = [];
+
     for (let w = 0; w < weeks; w++) {
       const colStart = addDays(first, w * 7);
-      const cells = [];
+      if (colStart.getDate() <= 7) {
+        const text = colStart
+          .toLocaleDateString("ru-RU", { month: "short" })
+          .replace(".", "");
+        const last = monthLabels[monthLabels.length - 1];
+        if (!last || last.text !== text) monthLabels.push({ index: w, text });
+      }
       for (let r = 0; r < 7; r++) {
         const d = addDays(colStart, r);
-        cells.push({ date: d, key: toDateKey(d), count: completedCounts.get(toDateKey(d)) ?? 0 });
+        const key = toDateKey(d);
+        cells.push({ key, count: counts.get(key) ?? 0, future: d.getTime() > now });
       }
-      cols.push({ key: toDateKey(colStart), cells });
     }
-    return cols;
-  }, [completedCounts, weeks]);
 
-  const monthLabels = useMemo(() => {
-    const labels: { index: number; text: string }[] = [];
-    grid.forEach((col, i) => {
-      const d = col.cells[0].date;
-      if (d.getDate() <= 7) {
-        const text = d.toLocaleDateString("ru-RU", { month: "short" }).replace(".", "");
-        const last = labels[labels.length - 1];
-        if (!last || last.text !== text) labels.push({ index: i, text });
-      }
-    });
-    return labels;
-  }, [grid]);
+    let totalDone = 0;
+    for (const count of counts.values()) totalDone += count;
 
-  const totalDone = useMemo(
-    () => [...completedCounts.values()].reduce((a, b) => a + b, 0),
-    [completedCounts],
-  );
+    return { cells, monthLabels, totalDone };
+  }, [state.tasks, weeks]);
 
-  const colStep = cell + gap;
+  const columns = { gridTemplateColumns: `repeat(${weeks}, minmax(0, 1fr))` };
+  const rows = { gridTemplateRows: "repeat(7, auto)" };
 
   return (
-    <div className={compact ? "" : "overflow-x-auto"}>
-      <div className={compact ? "" : "inline-block"}>
-        {/* Подписи месяцев */}
-        <div className="relative h-4 text-[10px] text-slate-500" style={{ marginLeft: gutter }}>
-          {monthLabels.map((m, i) => (
-            <span key={i} className="absolute top-0" style={{ left: m.index * colStep }}>
-              {m.text}
-            </span>
-          ))}
-        </div>
-
-        <div className="flex" style={{ gap }}>
-          {/* Дни недели */}
-          {!compact && (
-            <div className="flex flex-col text-[10px] text-slate-500" style={{ width: 32, marginRight: 4, gap }}>
-              {DAY_LABELS.map((l, i) => (
-                <span key={i} className="flex items-center" style={{ height: cell }}>
-                  {l}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Столбцы-недели */}
-          {grid.map((col) => (
-            <div key={col.key} className="flex flex-col" style={{ gap }}>
-              {col.cells.map((cellData) => {
-                const future = cellData.date.getTime() > Date.now();
-                const lvl = future ? 0 : levelFor(cellData.count);
-                return (
-                  <div
-                    key={cellData.key}
-                    title={
-                      future
-                        ? cellData.key
-                        : `${cellData.key}: выполнено ${cellData.count}`
-                    }
-                    className={LEVELS[lvl]}
-                    style={{ width: cell, height: cell, borderRadius: 3 }}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-
-        {!compact && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
-            <span>Меньше</span>
-            {LEVELS.map((l, i) => (
-              <span key={i} className={l} style={{ width: 11, height: 11, borderRadius: 3 }} />
+    <div className={className}>
+      {!compact && (
+        <div className="flex gap-[3px]">
+          <div className="w-8 shrink-0" />
+          <div className="grid flex-1" style={columns}>
+            {monthLabels.map((m) => (
+              <span
+                key={`${m.index}-${m.text}`}
+                style={{ gridColumnStart: m.index + 1 }}
+                className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.12em] text-faint"
+              >
+                {m.text}
+              </span>
             ))}
-            <span>Больше</span>
-            <span className="ml-2">
-              · {totalDone} {totalDone === 1 ? "задача" : "задач"} выполнено за период
-            </span>
+          </div>
+        </div>
+      )}
+
+      <div className={`flex gap-[3px] ${compact ? "" : "mt-1.5"}`}>
+        {!compact && (
+          <div className="grid w-8 shrink-0 grid-rows-7 gap-[3px] font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+            {DAY_LABELS.map((label, i) => (
+              <span key={i} className="flex items-center leading-none">
+                {label}
+              </span>
+            ))}
           </div>
         )}
+
+        <div
+          className="grid flex-1 grid-flow-col gap-[3px]"
+          style={{ ...columns, ...rows }}
+          role="img"
+          aria-label={`Активность за ${weeks} недель: ${totalDone} ${plural(
+            totalDone,
+            "выполненная задача",
+            "выполненные задачи",
+            "выполненных задач",
+          )}`}
+        >
+          {cells.map((cell) => {
+            const level = cell.future ? 0 : levelFor(cell.count);
+            return (
+              <div
+                key={cell.key}
+                title={cell.future ? cell.key : `${cell.key}: выполнено ${cell.count}`}
+                className="aspect-square"
+                style={{ backgroundColor: LEVELS[level] }}
+              />
+            );
+          })}
+        </div>
       </div>
+
+      {!compact && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+          <span>меньше</span>
+          <span className="flex items-center" style={{ gap: 3 }}>
+            {LEVELS.map((level, i) => (
+              <span key={i} style={{ width: 9, height: 9, backgroundColor: level }} />
+            ))}
+          </span>
+          <span>больше</span>
+          <span className="ml-auto text-muted">
+            {totalDone} {plural(totalDone, "задача", "задачи", "задач")} за период
+          </span>
+        </div>
+      )}
     </div>
   );
 }

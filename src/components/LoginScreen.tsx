@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+﻿import { useState, type FormEvent } from "react";
+import { Logo } from "./Logo";
 
 interface LoginScreenProps {
   onSignIn: (email: string) => Promise<{ error: string | null }>;
@@ -10,7 +11,16 @@ type Method = "password" | "link";
 type PasswordMode = "signin" | "signup";
 
 const inputClass =
-  "w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white outline-none placeholder:text-slate-600 focus:border-sky-400/60 focus:ring-2 focus:ring-sky-400/20";
+  "h-11 w-full border border-line bg-ink px-3 text-[15px] text-bone transition-colors outline-none placeholder:text-faint";
+
+const labelClass =
+  "mb-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted";
+
+const primaryClass =
+  "h-11 w-full bg-bone font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-ink transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40";
+
+const linkClass =
+  "py-2 text-[12px] text-muted underline decoration-line-strong underline-offset-4 transition-colors hover:text-bone hover:decoration-bone";
 
 export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: LoginScreenProps) {
   const [method, setMethod] = useState<Method>("password");
@@ -65,28 +75,40 @@ export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: Lo
     setSentTo(mail);
   };
 
+  const errorNote = error ? (
+    <p
+      role="alert"
+      className="border border-danger/40 bg-danger/10 px-3 py-2 text-xs leading-relaxed text-danger"
+    >
+      {error}
+    </p>
+  ) : null;
+
   return (
-    <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-6 text-slate-200 sm:px-6">
-      <div className="w-full max-w-sm">
-        <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 text-xl shadow-lg shadow-sky-500/20">
-            🌧️
-          </div>
-          <div>
-            <div className="text-lg font-semibold text-white">Study Tracker</div>
-            <div className="text-xs text-slate-500">личный прогресс в облаке</div>
+    <div className="flex h-full items-center justify-center overflow-y-auto bg-ink px-5 py-10">
+      <div className="w-full max-w-[22rem]">
+        <div className="flex items-center gap-3">
+          <Logo className="h-7 w-7 shrink-0 text-bone" />
+          <div className="min-w-0">
+            <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-bone">
+              Study Tracker
+            </div>
+            <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+              личный прогресс в облаке
+            </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur sm:p-6">
-          <div className="mb-5 grid grid-cols-2 gap-1 rounded-xl bg-black/30 p-1 text-xs">
+        <div className="mt-7 border border-line bg-panel">
+          <div className="grid grid-cols-2">
             <button
               type="button"
               onClick={() => switchMethod("password")}
-              className={`rounded-lg px-3 py-2 transition ${
+              aria-pressed={method === "password"}
+              className={`h-11 border-r border-b border-r-line font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
                 method === "password"
-                  ? "bg-white/10 text-white"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "border-b-bone bg-panel-strong text-bone"
+                  : "border-b-line text-faint hover:bg-panel-strong/60 hover:text-bone"
               }`}
             >
               Пароль
@@ -94,132 +116,134 @@ export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: Lo
             <button
               type="button"
               onClick={() => switchMethod("link")}
-              className={`rounded-lg px-3 py-2 transition ${
-                method === "link" ? "bg-white/10 text-white" : "text-slate-400 hover:text-slate-200"
+              aria-pressed={method === "link"}
+              className={`h-11 border-b font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
+                method === "link"
+                  ? "border-b-bone bg-panel-strong text-bone"
+                  : "border-b-line text-faint hover:bg-panel-strong/60 hover:text-bone"
               }`}
             >
               Ссылка на почту
             </button>
           </div>
 
-          {method === "password" ? (
-            <form onSubmit={submitPassword} className="space-y-4">
-              <div>
-                <label htmlFor="email" className="mb-1.5 block text-xs text-slate-400">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  autoFocus
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="you@example.com"
-                  className={inputClass}
-                />
-              </div>
+          <div className="p-5">
+            {method === "password" ? (
+              <form onSubmit={submitPassword} className="space-y-4" aria-busy={busy}>
+                <div>
+                  <label htmlFor="email" className={labelClass}>
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    autoFocus
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className={inputClass}
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="password" className="mb-1.5 block text-xs text-slate-400">
-                  Пароль
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  minLength={6}
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="минимум 6 символов"
-                  className={inputClass}
-                />
-              </div>
+                <div>
+                  <label htmlFor="password" className={labelClass}>
+                    Пароль
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    required
+                    minLength={6}
+                    autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="минимум 6 символов"
+                    className={inputClass}
+                  />
+                </div>
 
-              {error && (
-                <p className="rounded-lg border border-red-500/30 bg-red-950/40 px-3 py-2 text-xs text-red-200">
-                  {error}
+                {errorNote}
+
+                <button type="submit" disabled={busy} className={primaryClass}>
+                  {busy ? "Подождите…" : mode === "signin" ? "Войти" : "Создать аккаунт"}
+                </button>
+
+                <div className="-mb-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode(mode === "signin" ? "signup" : "signin");
+                      setError(null);
+                    }}
+                    className={linkClass}
+                  >
+                    {mode === "signin"
+                      ? "Первый раз? Создать аккаунт"
+                      : "Уже есть аккаунт? Войти"}
+                  </button>
+                </div>
+              </form>
+            ) : sentTo ? (
+              <div className="space-y-4">
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                    Ссылка отправлена на
+                  </div>
+                  <div className="mt-1.5 break-all font-mono text-[13px] text-bone">
+                    {sentTo}
+                  </div>
+                </div>
+                <p className="text-xs leading-relaxed text-muted">
+                  Откройте письмо на этом устройстве и перейдите по ссылке. У встроенной
+                  почты Supabase есть лимит писем в час — если не пришло, подождите или
+                  используйте вход по паролю.
                 </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={busy}
-                className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-3 py-2.5 text-sm font-medium text-white transition hover:from-sky-400 hover:to-indigo-400 disabled:opacity-50"
-              >
-                {busy ? "Подождите…" : mode === "signin" ? "Войти" : "Создать аккаунт"}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setMode(mode === "signin" ? "signup" : "signin");
-                  setError(null);
-                }}
-                className="w-full text-center text-xs text-sky-400 transition hover:text-sky-300"
-              >
-                {mode === "signin"
-                  ? "Первый раз? Создать аккаунт"
-                  : "Уже есть аккаунт? Войти"}
-              </button>
-            </form>
-          ) : sentTo ? (
-            <div className="space-y-4">
-              <p className="text-sm text-slate-200">
-                Ссылка для входа отправлена на <b>{sentTo}</b>.
-              </p>
-              <p className="text-xs leading-relaxed text-slate-400">
-                Откройте письмо на этом устройстве и перейдите по ссылке. У встроенной
-                почты Supabase есть лимит писем в час — если не пришло, подождите или
-                используйте вход по паролю.
-              </p>
-              <button
-                onClick={() => {
-                  setSentTo(null);
-                  setEmail("");
-                }}
-                className="text-xs text-sky-400 hover:text-sky-300"
-              >
-                Указать другую почту
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={submitLink} className="space-y-4">
-              <div>
-                <label htmlFor="email-link" className="mb-1.5 block text-xs text-slate-400">
-                  Email
-                </label>
-                <input
-                  id="email-link"
-                  type="email"
-                  required
-                  autoFocus
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="you@example.com"
-                  className={inputClass}
-                />
+                <div className="-my-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSentTo(null);
+                      setEmail("");
+                    }}
+                    className={linkClass}
+                  >
+                    Указать другую почту
+                  </button>
+                </div>
               </div>
+            ) : (
+              <form onSubmit={submitLink} className="space-y-4" aria-busy={busy}>
+                <div>
+                  <label htmlFor="email-link" className={labelClass}>
+                    Email
+                  </label>
+                  <input
+                    id="email-link"
+                    type="email"
+                    required
+                    autoFocus
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className={inputClass}
+                  />
+                </div>
 
-              {error && (
-                <p className="rounded-lg border border-red-500/30 bg-red-950/40 px-3 py-2 text-xs text-red-200">
-                  {error}
+                {errorNote}
+
+                <button type="submit" disabled={busy} className={primaryClass}>
+                  {busy ? "Отправляем…" : "Войти по ссылке"}
+                </button>
+
+                <p className="text-[11px] leading-relaxed text-faint">
+                  Пароль не нужен, но у бесплатного SMTP есть лимит писем.
                 </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={busy}
-                className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-3 py-2.5 text-sm font-medium text-white transition hover:from-sky-400 hover:to-indigo-400 disabled:opacity-50"
-              >
-                {busy ? "Отправляем…" : "Войти по ссылке"}
-              </button>
-
-              <p className="text-center text-[11px] leading-relaxed text-slate-500">
-                Пароль не нужен, но у бесплатного SMTP есть лимит писем.
-              </p>
-            </form>
-          )}
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>

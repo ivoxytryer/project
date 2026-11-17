@@ -1,34 +1,32 @@
 import { useState } from "react";
 import type { View } from "./types";
-import { RainBackground } from "./components/RainBackground";
 import { Sidebar } from "./components/Sidebar";
 import { TasksView } from "./components/TasksView";
 import { DashboardView } from "./components/DashboardView";
-import { useStore } from "./store";
 import { MobileNav } from "./components/MobileNav";
+import { Logo } from "./components/Logo";
+import { useStore } from "./store";
 
 export default function App() {
   const [view, setView] = useState<View>("tasks");
   const { error, clearError, mode, signOut } = useStore();
 
   return (
-    <div className="relative flex h-full flex-col text-slate-200 md:flex-row">
-      <RainBackground />
-
+    <div className="relative flex h-full flex-col bg-ink text-bone md:flex-row">
       <Sidebar view={view} onNavigate={setView} />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-white/5 bg-black/20 px-4 py-2.5 backdrop-blur-xl md:hidden">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-indigo-500 text-base shadow-lg shadow-sky-500/20">
-              🌧️
+        <header className="flex items-center justify-between border-b border-line px-4 py-3 md:hidden">
+          <div className="flex items-center gap-2.5">
+            <Logo className="h-5 w-5 text-bone" />
+            <div className="text-[12px] font-semibold uppercase tracking-[0.16em]">
+              Study Tracker
             </div>
-            <div className="text-sm font-semibold text-white">Study Tracker</div>
           </div>
           {mode === "cloud" && (
             <button
               onClick={() => void signOut()}
-              className="rounded-lg px-2.5 py-1.5 text-xs text-slate-400 transition hover:bg-white/5 hover:text-slate-200"
+              className="px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-bone"
             >
               Выйти
             </button>
@@ -43,12 +41,12 @@ export default function App() {
       <MobileNav view={view} onNavigate={setView} />
 
       {error && (
-        <div className="fixed bottom-4 right-4 z-50 max-w-sm rounded-xl border border-red-500/30 bg-red-950/80 px-4 py-3 text-sm text-red-100 shadow-lg backdrop-blur">
+        <div className="fixed bottom-20 right-4 z-50 max-w-sm border border-danger bg-ink px-4 py-3 text-xs text-danger md:bottom-4">
           <div className="flex items-start gap-3">
             <span className="flex-1">{error}</span>
             <button
               onClick={clearError}
-              className="shrink-0 text-red-300 transition hover:text-white"
+              className="shrink-0 text-danger transition-opacity hover:opacity-70"
               aria-label="Закрыть"
             >
               ×

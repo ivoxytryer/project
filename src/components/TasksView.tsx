@@ -15,6 +15,7 @@ export function TasksView() {
   const [title, setTitle] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const [menuId, setMenuId] = useState<string | null>(null);
 
   const tasks = useMemo(() => {
     const list = state.tasks.filter((t) => t.date === date);
@@ -47,25 +48,30 @@ export function TasksView() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
-      <div className="flex items-start gap-6">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
+      <div className="flex items-start gap-8">
         {/* Основная колонка задач */}
         <div className="min-w-0 flex-1">
           {/* Шапка с выбором дня */}
-          <header className="flex flex-wrap items-center justify-between gap-4">
+          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-4">
             <div>
-              <h1 className="text-xl font-bold text-white sm:text-2xl">Задачи</h1>
-              <p className="mt-1 text-sm text-slate-400">{formatDayLabel(date)}</p>
+              <h1 className="text-3xl font-semibold tracking-tight text-bone sm:text-4xl">
+                Задачи
+              </h1>
+              <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                {formatDayLabel(date)}
+              </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-1 backdrop-blur">
+            <div className="flex items-center border border-line">
               <button
                 onClick={() => setDate((d) => shiftDateKey(d, -1))}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white"
+                className="flex h-11 w-11 shrink-0 items-center justify-center text-muted transition-colors hover:bg-panel hover:text-bone md:h-9 md:w-9"
                 title="Предыдущий день"
+                aria-label="Предыдущий день"
               >
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M15 18l-6-6 6-6" strokeLinecap="square" />
                 </svg>
               </button>
 
@@ -73,23 +79,24 @@ export function TasksView() {
                 type="date"
                 value={date}
                 onChange={(e) => e.target.value && setDate(e.target.value)}
-                className="rounded-lg bg-transparent px-1 text-sm text-slate-200 outline-none [color-scheme:dark]"
+                className="h-11 min-w-0 border-x border-line bg-transparent px-2 font-mono text-xs tabular-nums text-bone outline-none [color-scheme:dark] md:h-9"
               />
 
               <button
                 onClick={() => setDate((d) => shiftDateKey(d, 1))}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white"
+                className="flex h-11 w-11 items-center justify-center text-muted transition-colors hover:bg-panel hover:text-bone md:h-9 md:w-9"
                 title="Следующий день"
+                aria-label="Следующий день"
               >
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M9 6l6 6-6 6" strokeLinecap="square" />
                 </svg>
               </button>
 
               {date !== todayKey() && (
                 <button
                   onClick={() => setDate(todayKey())}
-                  className="rounded-lg bg-sky-500/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-sky-500"
+                  className="h-11 border-l border-line px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:bg-panel md:h-9"
                 >
                   Сегодня
                 </button>
@@ -98,18 +105,18 @@ export function TasksView() {
           </header>
 
           {/* Добавление задачи */}
-          <div className="mt-5 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-2 backdrop-blur">
+          <div className="mt-6 flex items-center gap-2 border border-line p-2">
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submitAdd()}
               placeholder="Новая задача…"
-              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-white placeholder-slate-500 outline-none"
+              className="min-w-0 flex-1 bg-transparent px-2 py-2 text-[15px] text-bone placeholder:text-faint outline-none"
             />
             <button
               onClick={submitAdd}
               disabled={!title.trim()}
-              className="rounded-xl bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
+              className="h-11 shrink-0 bg-bone px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-30 md:h-9"
             >
               Добавить
             </button>
@@ -117,16 +124,16 @@ export function TasksView() {
 
           {/* Прогресс дня */}
           {tasks.length > 0 && (
-            <div className="mt-6">
-              <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="mt-7">
+              <div className="flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
                 <span>
-                  {doneCount} из {tasks.length} выполнено
+                  {doneCount} / {tasks.length} выполнено
                 </span>
-                <span className="font-medium text-slate-300">{progress}%</span>
+                <span className="tabular-nums text-bone">{progress}%</span>
               </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="mt-2 h-0.5 w-full bg-line">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-400 transition-all duration-500"
+                  className="progress-fill h-0.5 bg-bone"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -134,24 +141,32 @@ export function TasksView() {
           )}
 
           {/* Список задач */}
-          <ul className="mt-6 space-y-2">
-            {tasks.map((task) => (
+          <ul className="mt-8 border-t border-line">
+            {tasks.map((task, index) => (
               <li
                 key={task.id}
-                className="group flex items-center gap-2.5 rounded-2xl border border-white/5 bg-white/5 px-3 py-3 backdrop-blur transition hover:border-white/10 hover:bg-white/[0.08] sm:gap-3 sm:px-4"
+                className="group relative flex items-center gap-3 border-b border-line py-3 transition-colors hover:bg-panel sm:gap-4"
               >
+                <span className="w-5 shrink-0 font-mono text-[10px] tabular-nums text-faint">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
                 <button
                   onClick={() => dispatch({ type: "TOGGLE_TASK", id: task.id })}
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition
-                    ${
-                      task.completed
-                        ? "border-sky-400 bg-sky-500 text-white"
-                        : "border-slate-500 text-transparent hover:border-sky-400"
-                    }`}
+                  aria-label={task.completed ? "Снять отметку" : "Отметить выполненной"}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center md:h-9 md:w-9"
                 >
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  <span
+                    className={`flex h-[18px] w-[18px] items-center justify-center border transition-colors ${
+                      task.completed
+                        ? "border-bone bg-bone text-ink"
+                        : "border-line-strong text-transparent hover:border-bone"
+                    }`}
+                  >
+                    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 8.5l3.2 3.2L13 4.5" strokeLinecap="square" />
+                    </svg>
+                  </span>
                 </button>
 
                 {editingId === task.id ? (
@@ -164,35 +179,39 @@ export function TasksView() {
                       if (e.key === "Escape") setEditingId(null);
                     }}
                     onBlur={submitEdit}
-                    className="min-w-0 flex-1 rounded-lg bg-black/30 px-2 py-1 text-sm text-white outline-none ring-sky-400/50 focus:ring-2"
+                    className="min-w-0 flex-1 border border-line bg-ink px-2 py-1 text-[15px] text-bone outline-none"
                   />
                 ) : (
                   <span
-                    className={`min-w-0 flex-1 truncate text-sm ${
-                      task.completed ? "text-slate-500 line-through" : "text-slate-100"
+                    className={`min-w-0 flex-1 truncate text-[15px] leading-snug ${
+                      task.completed
+                        ? "text-faint line-through decoration-line-strong"
+                        : "text-bone"
                     }`}
                   >
                     {task.title}
                   </span>
                 )}
 
-                <div className="flex shrink-0 items-center gap-0.5">
+                <div className="hidden shrink-0 items-center gap-0.5 md:flex md:opacity-0 md:transition-opacity md:group-hover:opacity-100 md:focus-within:opacity-100">
                   <button
                     onClick={() => moveTask(task, -1)}
-                    className="rounded-md p-1.5 text-slate-500 hover:bg-white/10 hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center text-muted transition-colors hover:bg-ink hover:text-bone"
                     title="Перенести на вчера"
+                    aria-label="Перенести на вчера"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M15 18l-6-6 6-6" strokeLinecap="square" />
                     </svg>
                   </button>
                   <button
                     onClick={() => moveTask(task, 1)}
-                    className="rounded-md p-1.5 text-slate-500 hover:bg-white/10 hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center text-muted transition-colors hover:bg-ink hover:text-bone"
                     title="Перенести на завтра"
+                    aria-label="Перенести на завтра"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M9 6l6 6-6 6" strokeLinecap="square" />
                     </svg>
                   </button>
                   <button
@@ -200,45 +219,109 @@ export function TasksView() {
                       setEditingId(task.id);
                       setEditTitle(task.title);
                     }}
-                    className="rounded-md p-1.5 text-slate-500 hover:bg-white/10 hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center text-muted transition-colors hover:bg-ink hover:text-bone"
                     title="Редактировать"
+                    aria-label="Редактировать"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" strokeLinecap="square" />
                     </svg>
                   </button>
                   <button
                     onClick={() => dispatch({ type: "DELETE_TASK", id: task.id })}
-                    className="rounded-md p-1.5 text-slate-500 hover:bg-red-500/20 hover:text-red-400"
+                    className="flex h-8 w-8 items-center justify-center text-muted transition-colors hover:bg-ink hover:text-danger"
                     title="Удалить"
+                    aria-label="Удалить"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M3 6h18M8 6V4h8v2m3 0v14H5V6" strokeLinecap="square" />
                     </svg>
                   </button>
                 </div>
+
+                <button
+                  onClick={() => setMenuId(menuId === task.id ? null : task.id)}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center text-muted transition-colors hover:text-bone md:hidden"
+                  aria-label="Действия с задачей"
+                  aria-expanded={menuId === task.id}
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="5" cy="12" r="1.4" />
+                    <circle cx="12" cy="12" r="1.4" />
+                    <circle cx="19" cy="12" r="1.4" />
+                  </svg>
+                </button>
+
+                {menuId === task.id && (
+                  <div className="absolute right-2 top-full z-20 w-52 border border-line bg-panel">
+                    <button
+                      onClick={() => {
+                        moveTask(task, -1);
+                        setMenuId(null);
+                      }}
+                      className="block w-full px-3 py-3 text-left text-[13px] text-bone transition-colors hover:bg-ink"
+                    >
+                      Перенести на вчера
+                    </button>
+                    <button
+                      onClick={() => {
+                        moveTask(task, 1);
+                        setMenuId(null);
+                      }}
+                      className="block w-full border-t border-line px-3 py-3 text-left text-[13px] text-bone transition-colors hover:bg-ink"
+                    >
+                      Перенести на завтра
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingId(task.id);
+                        setEditTitle(task.title);
+                        setMenuId(null);
+                      }}
+                      className="block w-full border-t border-line px-3 py-3 text-left text-[13px] text-bone transition-colors hover:bg-ink"
+                    >
+                      Переименовать
+                    </button>
+                    <button
+                      onClick={() => {
+                        dispatch({ type: "DELETE_TASK", id: task.id });
+                        setMenuId(null);
+                      }}
+                      className="block w-full border-t border-line px-3 py-3 text-left text-[13px] text-danger transition-colors hover:bg-ink"
+                    >
+                      Удалить
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
 
             {tasks.length === 0 && (
-              <div className="mt-16 flex flex-col items-center text-center">
-                <div className="text-4xl">☔</div>
-                <p className="mt-3 text-sm text-slate-400">
-                  На {formatShortDate(date)} задач нет.
+              <li className="border-b border-line py-16 text-center">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center border border-line text-faint">
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="3.5" y="4.5" width="17" height="16" />
+                    <path d="M8 12h8M8 16h5" strokeLinecap="square" />
+                  </svg>
+                </div>
+                <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                  На {formatShortDate(date)} задач нет
                 </p>
-                <p className="text-xs text-slate-600">Добавь первую задачу выше.</p>
-              </div>
+                <p className="mt-1.5 text-sm text-faint">Добавьте первую задачу выше.</p>
+              </li>
             )}
           </ul>
         </div>
 
-        {/* Активность — маленький полупрозрачный квадрат справа */}
+        {/* Активность — узкая рейка справа */}
         <aside className="hidden w-44 shrink-0 lg:block">
-          <div className="sticky top-8 rounded-2xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-sm">
-            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="sticky top-10 border border-line p-4">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
               Активность
             </h2>
-            <Heatmap compact weeks={10} />
+            <div className="mt-4">
+              <Heatmap compact weeks={10} />
+            </div>
           </div>
         </aside>
       </div>

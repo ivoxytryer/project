@@ -184,9 +184,9 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 
 function BootScreen() {
   return (
-    <div className="flex h-full items-center justify-center bg-slate-950 text-slate-300">
-      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-sky-400 border-t-transparent" />
+    <div className="flex h-full items-center justify-center bg-ink text-muted">
+      <div className="flex items-center gap-3 border border-line px-5 py-4 font-mono text-[10px] uppercase tracking-[0.14em]">
+        <span className="h-2.5 w-2.5 animate-pulse bg-bone" />
         Подключение к Supabase…
       </div>
     </div>
