@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Task } from "../types";
 import { useStore } from "../store";
 import { Heatmap } from "./Heatmap";
@@ -16,6 +16,19 @@ export function TasksView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [menuId, setMenuId] = useState<string | null>(null);
+  const [flashId, setFlashId] = useState<string | null>(null);
+  const flashTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(flashTimer.current), []);
+
+  const toggleTask = (task: Task) => {
+    dispatch({ type: "TOGGLE_TASK", id: task.id });
+    if (!task.completed) {
+      setFlashId(task.id);
+      window.clearTimeout(flashTimer.current);
+      flashTimer.current = window.setTimeout(() => setFlashId(null), 900);
+    }
+  };
 
   const tasks = useMemo(() => {
     const list = state.tasks.filter((t) => t.date === date);
@@ -145,7 +158,9 @@ export function TasksView() {
             {tasks.map((task, index) => (
               <li
                 key={task.id}
-                className="animate-rise group relative flex items-center gap-3 border-b border-line py-3 transition-colors hover:bg-panel sm:gap-4"
+                className={`animate-rise group relative flex items-center gap-3 border-b border-line py-3 transition-colors hover:bg-panel sm:gap-4 ${
+                  flashId === task.id ? "task-flash" : ""
+                }`}
                 style={{ animationDelay: `${Math.min(index, 12) * 24}ms` }}
               >
                 <span className="flex h-11 w-6 shrink-0 items-center justify-center font-mono text-xs tabular-nums text-faint md:h-9">
@@ -153,7 +168,7 @@ export function TasksView() {
                 </span>
 
                 <button
-                  onClick={() => dispatch({ type: "TOGGLE_TASK", id: task.id })}
+                  onClick={() => toggleTask(task)}
                   aria-label={task.completed ? "Снять отметку" : "Отметить выполненной"}
                   className="flex h-11 w-11 shrink-0 items-center justify-center md:h-9 md:w-9"
                 >
