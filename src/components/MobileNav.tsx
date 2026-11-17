@@ -9,7 +9,7 @@ export function MobileNav({ view, onNavigate }: MobileNavProps) {
   const item = (target: View, label: string, icon: React.ReactNode) => (
     <button
       onClick={() => onNavigate(target)}
-      className={`flex flex-col items-center justify-center gap-1.5 py-2.5 text-[10px] uppercase tracking-[0.14em] transition-colors ${
+      className={`flex flex-col items-center justify-center gap-1.5 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors ${
         view === target ? "text-bone" : "text-faint hover:text-muted"
       }`}
       aria-current={view === target ? "page" : undefined}

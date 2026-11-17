@@ -73,8 +73,8 @@ export function Heatmap({ weeks = 17, compact = false, className = "" }: Heatmap
               style={{ gridColumnStart: m.index + 1 }}
               className={
                 compact
-                  ? "whitespace-nowrap font-mono text-[8px] uppercase tracking-[0.08em] text-faint"
-                  : "whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.12em] text-faint"
+                  ? "whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.08em] text-faint"
+                  : "whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-faint"
               }
             >
               {m.text}
@@ -85,7 +85,7 @@ export function Heatmap({ weeks = 17, compact = false, className = "" }: Heatmap
 
       <div className={`flex gap-[3px] ${compact ? "" : "mt-1.5"}`}>
         {!compact && (
-          <div className="grid w-8 shrink-0 grid-rows-7 gap-[3px] font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+          <div className="grid w-8 shrink-0 grid-rows-7 gap-[3px] font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
             {DAY_LABELS.map((label, i) => (
               <span key={i} className="flex items-center leading-none">
                 {label}
@@ -120,7 +120,7 @@ export function Heatmap({ weeks = 17, compact = false, className = "" }: Heatmap
       </div>
 
       {!compact && (
-        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
           <span>меньше</span>
           <span className="flex items-center" style={{ gap: 3 }}>
             {LEVELS.map((level, i) => (

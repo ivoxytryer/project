@@ -75,7 +75,7 @@ export function DashboardView() {
           {value}
         </span>
         {detail && (
-          <span className="truncate font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+          <span className="truncate font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
             {detail}
           </span>
         )}
@@ -89,7 +89,7 @@ export function DashboardView() {
         <h1 className="text-3xl font-semibold tracking-tight text-bone sm:text-4xl">
           Дашборд
         </h1>
-        <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+        <p className="mt-1.5 font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
           {stats.firstDate
             ? `журнал с ${formatShortDate(stats.firstDate)} · ${stats.journalDays} ${plural(
                 stats.journalDays,
@@ -108,7 +108,7 @@ export function DashboardView() {
               <path d="M4 20V10M10 20V4M16 20v-8M22 20H2" strokeLinecap="square" />
             </svg>
           </div>
-          <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+          <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
             Записей пока нет
           </p>
           <p className="mt-1.5 text-sm text-faint">
@@ -118,7 +118,7 @@ export function DashboardView() {
       ) : (
         <>
           <section className="animate-rise mt-8" style={{ animationDelay: "60ms" }}>
-            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
               Сводка
             </h2>
 
@@ -137,7 +137,7 @@ export function DashboardView() {
             </dl>
 
             <div className="mt-6">
-              <div className="flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+              <div className="flex items-baseline justify-between font-mono text-[12px] uppercase tracking-[0.14em] text-muted">
                 <span>
                   выполнено {stats.completed} из {stats.total} за всё время
                 </span>
@@ -154,10 +154,10 @@ export function DashboardView() {
 
           <section className="animate-rise mt-10" style={{ animationDelay: "120ms" }}>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
                 Активность
               </h2>
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+              <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
                 <span className="lg:hidden">17 недель</span>
                 <span className="hidden lg:inline">год</span>
               </span>

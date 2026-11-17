@@ -34,7 +34,7 @@ export function Sidebar({ view, onNavigate }: SidebarProps) {
           <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-bone">
             Study Tracker
           </div>
-          <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+          <div className="mt-0.5 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
             личный прогресс
           </div>
         </div>
@@ -60,13 +60,13 @@ export function Sidebar({ view, onNavigate }: SidebarProps) {
 
       <div className="flex-1" />
 
-      <div className="border-t border-line px-5 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+      <div className="border-t border-line px-5 py-3 font-mono text-[12px] uppercase tracking-[0.12em] text-faint">
         {openCount} {plural(openCount, "открытая задача", "открытые задачи", "открытых задач")}
       </div>
 
       {mode === "cloud" && (
         <div className="border-t border-line px-5 py-3">
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+          <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
             <span className="h-1.5 w-1.5 bg-bone" />
             облако
           </div>
@@ -75,7 +75,7 @@ export function Sidebar({ view, onNavigate }: SidebarProps) {
           </div>
           <button
             onClick={() => void signOut()}
-            className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-faint transition-colors hover:text-bone"
+            className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-faint transition-colors hover:text-bone"
           >
             Выйти
           </button>

@@ -14,7 +14,7 @@ const inputClass =
   "h-11 w-full border border-line bg-ink px-3 text-[15px] text-bone transition-colors outline-none placeholder:text-faint";
 
 const labelClass =
-  "mb-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted";
+  "mb-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-muted";
 
 const primaryClass =
   "h-11 w-full bg-bone font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-ink transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40";
@@ -93,7 +93,7 @@ export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: Lo
             <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-bone">
               Study Tracker
             </div>
-            <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+            <div className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
               личный прогресс в облаке
             </div>
           </div>
@@ -105,7 +105,7 @@ export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: Lo
               type="button"
               onClick={() => switchMethod("password")}
               aria-pressed={method === "password"}
-              className={`h-11 border-r border-b border-r-line font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
+              className={`h-11 border-r border-b border-r-line font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
                 method === "password"
                   ? "border-b-bone bg-panel-strong text-bone"
                   : "border-b-line text-faint hover:bg-panel-strong/60 hover:text-bone"
@@ -117,7 +117,7 @@ export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: Lo
               type="button"
               onClick={() => switchMethod("link")}
               aria-pressed={method === "link"}
-              className={`h-11 border-b font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
+              className={`h-11 border-b font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
                 method === "link"
                   ? "border-b-bone bg-panel-strong text-bone"
                   : "border-b-line text-faint hover:bg-panel-strong/60 hover:text-bone"
@@ -188,7 +188,7 @@ export function LoginScreen({ onSignIn, onSignInPassword, onSignUpPassword }: Lo
             ) : sentTo ? (
               <div className="space-y-4">
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
                     Ссылка отправлена на
                   </div>
                   <div className="mt-1.5 break-all font-mono text-[13px] text-bone">

@@ -58,7 +58,7 @@ export function TasksView() {
               <h1 className="text-3xl font-semibold tracking-tight text-bone sm:text-4xl">
                 Задачи
               </h1>
-              <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              <p className="mt-1.5 font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
                 {formatDayLabel(date)}
               </p>
             </div>
@@ -96,7 +96,7 @@ export function TasksView() {
               {date !== todayKey() && (
                 <button
                   onClick={() => setDate(todayKey())}
-                  className="h-11 border-l border-line px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:bg-panel md:h-9"
+                  className="h-11 border-l border-line px-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:bg-panel md:h-9"
                 >
                   Сегодня
                 </button>
@@ -111,12 +111,12 @@ export function TasksView() {
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submitAdd()}
               placeholder="Новая задача…"
-              className="min-w-0 flex-1 bg-transparent px-2 py-2 text-[15px] text-bone placeholder:text-faint outline-none"
+              className="min-w-0 flex-1 bg-transparent px-2 py-2 text-base text-bone placeholder:text-faint outline-none"
             />
             <button
               onClick={submitAdd}
               disabled={!title.trim()}
-              className="h-11 shrink-0 bg-bone px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-30 md:h-9"
+              className="h-11 shrink-0 bg-bone px-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-30 md:h-9"
             >
               Добавить
             </button>
@@ -125,7 +125,7 @@ export function TasksView() {
           {/* Прогресс дня */}
           {tasks.length > 0 && (
             <div className="mt-7">
-              <div className="flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+              <div className="flex items-baseline justify-between font-mono text-[12px] uppercase tracking-[0.14em] text-muted">
                 <span>
                   {doneCount} / {tasks.length} выполнено
                 </span>
@@ -188,7 +188,7 @@ export function TasksView() {
                       if (e.key === "Escape") setEditingId(null);
                     }}
                     onBlur={submitEdit}
-                    className="min-w-0 flex-1 border border-line bg-ink px-2 py-1 text-[15px] text-bone outline-none focus:border-bone"
+                    className="min-w-0 flex-1 border border-line bg-ink px-2 py-1 text-base text-bone outline-none focus:border-bone"
                   />
                 ) : (
                   <span
@@ -313,7 +313,7 @@ export function TasksView() {
                     <path d="M8 12h8M8 16h5" strokeLinecap="square" />
                   </svg>
                 </div>
-                <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
                   На {formatShortDate(date)} задач нет
                 </p>
                 <p className="mt-1.5 text-sm text-faint">Добавьте первую задачу выше.</p>
@@ -325,7 +325,7 @@ export function TasksView() {
         {/* Активность — узкая рейка справа */}
         <aside className="hidden w-44 shrink-0 lg:block">
           <div className="sticky top-10 border border-line p-4">
-            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
               Активность
             </h2>
             <div className="mt-4">
