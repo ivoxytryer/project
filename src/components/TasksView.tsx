@@ -179,7 +179,7 @@ export function TasksView() {
                       if (e.key === "Escape") setEditingId(null);
                     }}
                     onBlur={submitEdit}
-                    className="min-w-0 flex-1 border border-line bg-ink px-2 py-1 text-[15px] text-bone outline-none"
+                    className="min-w-0 flex-1 border border-line bg-ink px-2 py-1 text-[15px] text-bone outline-none focus:border-bone"
                   />
                 ) : (
                   <span
